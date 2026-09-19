@@ -46,6 +46,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/raftnet/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/common/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/pagetable/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/pageclient/include)
+include_directories(${CMAKE_SOURCE_DIR}/protocols)
 
 enable_testing()
 
@@ -59,6 +60,12 @@ add_subdirectory(third_party/raft-lib)
 add_subdirectory(lib/raftnet)
 
 # Added incrementally as each is implemented -- see README.md's build status table.
+# tools/ comes before services/ so an inter-service test's `if(TARGET
+# gen_toy_weights)` (or similar) sees it already defined -- add_subdirectory
+# order matters for if(TARGET), unlike generator expressions.
+if(EXISTS ${CMAKE_SOURCE_DIR}/tools/CMakeLists.txt)
+  add_subdirectory(tools)
+endif()
 if(EXISTS ${CMAKE_SOURCE_DIR}/kernel/CMakeLists.txt)
   add_subdirectory(kernel)
 endif()
@@ -67,9 +74,6 @@ foreach(svc node-agentd swapd shard-execd page-directoryd membershipd schedulerd
     add_subdirectory(services/${svc})
   endif()
 endforeach()
-if(EXISTS ${CMAKE_SOURCE_DIR}/tools/CMakeLists.txt)
-  add_subdirectory(tools)
-endif()
 
 message(STATUS "Continuum OS build configuration")
 message(STATUS "  Target arch        : ${CMAKE_SYSTEM_PROCESSOR} (ARM tuning: ${CONTINUUM_TARGET_ARM})")

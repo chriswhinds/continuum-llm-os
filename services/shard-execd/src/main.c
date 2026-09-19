@@ -131,20 +131,23 @@ int main(int argc, char **argv) {
 
     kvcache_t *kv = kvcache_create(65536);
 
-    int listen_fd = sock_unix_listen(cfg.listen_unix_socket, 8);
+    /* TCP, not Unix -- schedulerd dials in from a control-plane node,
+     * shard-execd runs on a compute node (different physical boards per
+     * ARCH-002 §01); see shard_config.h's module comment. */
+    int listen_fd = sock_tcp_listen(NULL, cfg.listen_port, 8);
     if (listen_fd < 0) {
-        clog_error("shard-execd: cannot listen on %s: %s", cfg.listen_unix_socket, strerror(errno));
+        clog_error("shard-execd: cannot listen on :%u: %s", cfg.listen_port, strerror(errno));
         return 1;
     }
     /* shard-execd handles one connection at a time synchronously (see the
      * module comment), so a plain blocking accept()/recv() loop is the
-     * right shape here -- undo sock_unix_listen()'s O_NONBLOCK, which
+     * right shape here -- undo sock_tcp_listen()'s O_NONBLOCK, which
      * exists for the epoll-driven daemons (node-agentd, swapd), not this
      * one. */
     int flags = fcntl(listen_fd, F_GETFL, 0);
     fcntl(listen_fd, F_SETFL, flags & ~O_NONBLOCK);
 
-    clog_info("shard-execd: node %u ready, listening on %s", cfg.node_id, cfg.listen_unix_socket);
+    clog_info("shard-execd: node %u ready, listening on :%u", cfg.node_id, cfg.listen_port);
 
     for (;;) {
         int fd = accept(listen_fd, NULL, NULL);

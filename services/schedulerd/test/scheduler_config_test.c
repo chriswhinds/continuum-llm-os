@@ -9,8 +9,8 @@ int main(void) {
     const char *path = "/tmp/scheduler_config_test.conf";
     FILE *f = fopen(path, "w");
     fprintf(f, "listen_unix_socket /tmp/sched.sock\n");
-    fprintf(f, "route toy-model /tmp/shard1.sock\n");
-    fprintf(f, "route toy-model-2 /tmp/shard2.sock\n");
+    fprintf(f, "route toy-model 10.0.0.21:7301\n");
+    fprintf(f, "route toy-model-2 10.0.0.22:7301\n");
     fclose(f);
 
     scheduler_config_t cfg;
@@ -20,7 +20,8 @@ int main(void) {
 
     const scheduler_route_t *r = scheduler_find_route(&cfg, "toy-model-2");
     assert(r != NULL);
-    assert(strcmp(r->shard_execd_socket, "/tmp/shard2.sock") == 0);
+    assert(strcmp(r->shard_execd_host, "10.0.0.22") == 0);
+    assert(r->shard_execd_port == 7301);
 
     assert(scheduler_find_route(&cfg, "nonexistent") == NULL);
 

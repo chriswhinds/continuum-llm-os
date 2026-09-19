@@ -1,6 +1,7 @@
 /* Full pipeline end-to-end test against REAL binaries: gen_toy_weights ->
- * swapd -> shard-execd, then a client dispatches a prompt over Unix socket
- * and streams tokens back exactly the way schedulerd will. This is the
+ * swapd -> shard-execd, then a client dispatches a prompt over TCP (the
+ * same link schedulerd uses -- see shard_config.h on why this is TCP,
+ * not Unix) and streams tokens back. This is the
  * strongest test in the tree: it proves paging, model loading, the
  * forward/decode loop, and the wire protocol all work together, not just
  * each piece in isolation.
@@ -19,6 +20,7 @@
 #include "wire.h"
 
 #define NODE_ID 66
+#define SHARD_PORT 18801
 
 static void sleep_ms(int ms) {
     struct timespec ts = {.tv_sec = ms / 1000, .tv_nsec = (ms % 1000) * 1000000L};
@@ -39,7 +41,6 @@ int main(void) {
     const char *swapd_conf = "/tmp/shard_e2e_test_swapd.conf";
     const char *shard_conf = "/tmp/shard_e2e_test_shard.conf";
     const char *swapd_sock = "/tmp/shard_e2e_test_swapd.sock";
-    const char *shard_sock = "/tmp/shard_e2e_test_shard.sock";
 
     char *gen_argv[] = {(char *)"gen_toy_weights", (char *)weight_path, (char *)"99", NULL};
     pid_t gen_pid = spawn(GEN_TOY_WEIGHTS_BIN, gen_argv);
@@ -60,8 +61,8 @@ int main(void) {
 
     cf = fopen(shard_conf, "w");
     fprintf(cf, "node_id %d\nweight_file %s\npage_size 4096\nswapd_unix_socket %s\n"
-                "listen_unix_socket %s\ndefault_max_new_tokens 12\ndefault_temperature 0\n",
-            NODE_ID, weight_path, swapd_sock, shard_sock);
+                "listen_port %d\ndefault_max_new_tokens 12\ndefault_temperature 0\n",
+            NODE_ID, weight_path, swapd_sock, SHARD_PORT);
     fclose(cf);
 
     char *swapd_argv[] = {(char *)"swapd", (char *)"--config", (char *)swapd_conf, NULL};
@@ -74,7 +75,7 @@ int main(void) {
     int fd = -1;
     for (int attempt = 0; attempt < 50 && fd < 0; attempt++) {
         sleep_ms(100);
-        fd = sock_unix_connect(shard_sock);
+        fd = sock_tcp_connect("127.0.0.1", SHARD_PORT);
     }
     assert(fd >= 0);
     printf("ok: shard-execd came up (model loaded through swapd) and accepted a connection\n");

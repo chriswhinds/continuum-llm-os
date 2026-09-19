@@ -49,9 +49,10 @@ static void handle_connection(int client_fd, const scheduler_config_t *cfg) {
         return;
     }
 
-    int shard_fd = sock_unix_connect(route->shard_execd_socket);
+    int shard_fd = sock_tcp_connect(route->shard_execd_host, route->shard_execd_port);
     if (shard_fd < 0) {
-        clog_error("schedulerd: cannot reach shard-execd at %s for model '%s'", route->shard_execd_socket, req.model_name);
+        clog_error("schedulerd: cannot reach shard-execd at %s:%u for model '%s'",
+                  route->shard_execd_host, route->shard_execd_port, req.model_name);
         const char *msg = "shard executor unreachable";
         wire_send_frame_blocking(client_fd, WIRE_ERROR, WIRE_FLAG_FINAL, stream_id, msg, (uint32_t)strlen(msg));
         free(buf);
@@ -83,8 +84,8 @@ static void handle_connection(int client_fd, const scheduler_config_t *cfg) {
         return;
     }
 
-    clog_info("schedulerd: dispatched %u-token prompt for model '%s' to %s",
-              req.n_prompt_tokens, req.model_name, route->shard_execd_socket);
+    clog_info("schedulerd: dispatched %u-token prompt for model '%s' to %s:%u",
+              req.n_prompt_tokens, req.model_name, route->shard_execd_host, route->shard_execd_port);
 
     /* Relay every TOKEN_CHUNK straight through until the shard marks one
      * final, streaming as we go rather than buffering the whole response. */

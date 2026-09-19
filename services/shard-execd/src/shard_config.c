@@ -31,7 +31,7 @@ int shard_config_load(const char *path, shard_config_t *out) {
     out->default_max_new_tokens = 64;
     out->default_temperature = 0.8f;
     strncpy(out->swapd_unix_socket, "/run/continuum/swapd.sock", sizeof(out->swapd_unix_socket) - 1);
-    strncpy(out->listen_unix_socket, "/run/continuum/shard-execd.sock", sizeof(out->listen_unix_socket) - 1);
+    out->listen_port = 7301;
 
     FILE *f = fopen(path, "r");
     if (!f) {
@@ -59,9 +59,9 @@ int shard_config_load(const char *path, shard_config_t *out) {
         } else if (strcmp(key, "swapd_unix_socket") == 0) {
             char *v = next_token(&cursor);
             if (v) strncpy(out->swapd_unix_socket, v, sizeof(out->swapd_unix_socket) - 1);
-        } else if (strcmp(key, "listen_unix_socket") == 0) {
+        } else if (strcmp(key, "listen_port") == 0) {
             char *v = next_token(&cursor);
-            if (v) strncpy(out->listen_unix_socket, v, sizeof(out->listen_unix_socket) - 1);
+            if (v) out->listen_port = (uint16_t)atoi(v);
         } else if (strcmp(key, "default_max_new_tokens") == 0) {
             char *v = next_token(&cursor);
             if (v) out->default_max_new_tokens = (uint32_t)atoi(v);

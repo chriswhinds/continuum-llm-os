@@ -62,7 +62,7 @@ int main(void) {
     const char *sched_conf = "/tmp/gw_e2e_sched.conf";
     const char *gw_conf = "/tmp/gw_e2e_gateway.conf";
     const char *swapd_sock = "/tmp/gw_e2e_swapd.sock";
-    const char *shard_sock = "/tmp/gw_e2e_shard.sock";
+    const int shard_port = 18901;
     const char *sched_sock = "/tmp/gw_e2e_sched.sock";
 
     char *gen_argv[] = {(char *)"gen_toy_weights", (char *)weight_path, (char *)"7", NULL};
@@ -84,12 +84,12 @@ int main(void) {
 
     cf = fopen(shard_conf, "w");
     fprintf(cf, "node_id %d\nweight_file %s\npage_size 4096\nswapd_unix_socket %s\n"
-                "listen_unix_socket %s\ndefault_max_new_tokens 8\ndefault_temperature 0\n",
-            NODE_ID, weight_path, swapd_sock, shard_sock);
+                "listen_port %d\ndefault_max_new_tokens 8\ndefault_temperature 0\n",
+            NODE_ID, weight_path, swapd_sock, shard_port);
     fclose(cf);
 
     cf = fopen(sched_conf, "w");
-    fprintf(cf, "listen_unix_socket %s\nroute toy-model %s\n", sched_sock, shard_sock);
+    fprintf(cf, "listen_unix_socket %s\nroute toy-model 127.0.0.1:%d\n", sched_sock, shard_port);
     fclose(cf);
 
     cf = fopen(gw_conf, "w");

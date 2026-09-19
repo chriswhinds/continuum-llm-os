@@ -1,0 +1,61 @@
+# Continuum node image Buildroot defconfig (ARCH-002 §06).
+#
+# Use with a Buildroot checkout targeting the Raspberry Pi 5:
+#   cp image/buildroot/continuum_defconfig <buildroot>/configs/
+#   cd <buildroot> && make continuum_defconfig
+#   make menuconfig   # only if you need to change anything below
+#   make
+#
+# This defconfig deliberately builds almost nothing: no shell, no
+# coreutils, no package manager, no init system beyond continuumd itself.
+# ARCH-002 §04's framing is literal here -- continuumd IS the init
+# system, not a service running under one.
+
+BR2_aarch64=y
+BR2_cortex_a76=y
+
+# Raspberry Pi 5 (bcm2712) board support -- Buildroot's own
+# board/raspberrypi5 overlay provides the firmware blobs, device tree,
+# and boot partition layout; this defconfig only adds what's specific to
+# Continuum on top of it.
+BR2_TARGET_GENERIC_HOSTNAME="continuum-node"
+BR2_TARGET_GENERIC_ISSUE=""
+
+# Kernel: Raspberry Pi's own tree + this repo's fragment (image/kernel/
+# continuum-fragment.config) merged on top of the Pi 5 defconfig.
+BR2_LINUX_KERNEL=y
+BR2_LINUX_KERNEL_CUSTOM_GIT=y
+BR2_LINUX_KERNEL_CUSTOM_REPO_URL="https://github.com/raspberrypi/linux.git"
+BR2_LINUX_KERNEL_CUSTOM_REPO_VERSION="rpi-6.6.y"
+BR2_LINUX_KERNEL_DEFCONFIG="bcm2712"
+BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="../../image/kernel/continuum-fragment.config"
+BR2_LINUX_KERNEL_DTS_SUPPORT=y
+
+# musl, not glibc -- every Continuum binary is statically linked against
+# it (see the top-level CMakeLists' CONTINUUM_STATIC option and each
+# service's own build notes in ARCH-002 §05); musl keeps the resulting
+# static binaries small, which matters on boards this constrained.
+BR2_TOOLCHAIN_BUILDROOT_MUSL=y
+BR2_STATIC_LIBS=y
+BR2_SHARED_STATIC_LIBS=n
+
+# No shell, no coreutils, no init system: continuumd is PID 1 (see
+# kernel/src/main.c and this repo's root README). BR2_ROOTFS_SKELETON_
+# CUSTOM below builds the target's /init directly from Continuum's own
+# CMake build output.
+BR2_INIT_NONE=y
+BR2_SYSTEM_BIN_SH_NONE=y
+BR2_PACKAGE_BUSYBOX=n
+
+BR2_ROOTFS_SKELETON_CUSTOM=y
+BR2_ROOTFS_SKELETON_CUSTOM_PATH="../../image/buildroot/rootfs-overlay"
+
+# BR2_ROOTFS_POST_BUILD_SCRIPT copies this repo's own cross-built
+# binaries into the overlay -- see the sibling post-build.sh. Buildroot
+# doesn't build Continuum's C sources itself (they're not a Buildroot
+# package); it packages what CMake already produced.
+BR2_ROOTFS_POST_BUILD_SCRIPT="../../image/buildroot/post-build.sh"
+
+BR2_TARGET_ROOTFS_EXT2=y
+BR2_TARGET_ROOTFS_EXT2_4=y
+BR2_TARGET_ROOTFS_EXT2_SIZE="512M"

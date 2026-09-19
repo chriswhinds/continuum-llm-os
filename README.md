@@ -39,7 +39,7 @@ model, see [Running the demo](#running-the-demo) below.
 | `services/page-directoryd` | Cluster-wide page directory, replicated via Raft | Built, e2e tested (real 3-node cluster) |
 | `services/membershipd` | Control-plane membership, replicated via Raft | Built, e2e tested (real 3-node cluster) |
 | `services/consoled` | Operator console — HTTP + polled JSON telemetry | Built, e2e tested |
-| `firmware/boot_processor` | RP2040 boot-processor firmware | Written, **not compiled** (no Pico SDK/toolchain in this environment) |
+| `firmware/boot_processor` | RP2040 boot-processor firmware | **Compiles cleanly** against a real Pico SDK + `arm-none-eabi-gcc`, produces a byte-correct `.uf2` — see `firmware/boot_processor/CMakeLists.txt` for the verified build recipe. Not run on real hardware (no Pico available here) |
 | `image/` | Buildroot defconfig, kernel config fragment, per-role config templates | Written, **not run** (no Buildroot checkout attempted — see below) |
 
 Foundational libraries (`lib/`): `wire` (the framed binary protocol),
@@ -150,11 +150,19 @@ detail in the relevant source file's module comment; this is the index:
   purely an I/O-backend choice, swappable later without touching the
   fault-handling logic.
 - **`civetweb` → `picohttpparser`.** See `services/consoled/src/main.c`.
-- **The boot processor and Buildroot image are unverified.** Neither
-  a Pico SDK/`arm-none-eabi-gcc` toolchain nor a Buildroot checkout was
-  available in the environment this was built in. Both are real, complete
-  source/config (see `firmware/boot_processor/` and `image/`), just never
-  compiled or run.
+- **The boot processor compiles and produces a verified `.uf2`, but has
+  never run on real hardware.** No Pico SDK/toolchain was available in
+  this environment at first — but neither needs `apt`/root, so both were
+  fetched as plain downloads and the firmware was actually built:
+  `firmware/boot_processor/CMakeLists.txt` has the exact recipe. Zero
+  compiler warnings; the resulting `.uf2` has correct UF2 magic numbers
+  and an ELF32/ARM header with its entry point in the RP2040's XIP flash
+  region. What's unverified is the firmware actually running on a real
+  Pico (none was available to flash).
+- **The Buildroot image was never run** — no Buildroot checkout was
+  attempted (a full build is hours and gigabytes, unlike the firmware
+  above). `image/` has real, complete config (defconfig, kernel fragment,
+  post-build script, per-role templates), just never exercised.
 
 ## Real bugs found and fixed while building this
 
@@ -196,6 +204,14 @@ without exactly this kind of end-to-end testing:
    never work once those two are on different physical boards, exactly
    the deployment ARCH-002 §01 describes. See the commit that switched
    this to TCP for the full explanation.
+6. **A missing include in the boot processor firmware.** `console_ring.c`
+   called `save_and_disable_interrupts()`/`restore_interrupts()` without
+   including `hardware/sync.h` — compiled anyway (implicit declaration,
+   just a warning), but on an architecture where an implicit `int`-returning
+   declaration doesn't happen to match the real signature, that class of
+   bug silently corrupts values. Only surfaced once the firmware was
+   actually compiled against a real Pico SDK — see the toolchain recipe
+   in `firmware/boot_processor/CMakeLists.txt`.
 
 ## Build system notes
 

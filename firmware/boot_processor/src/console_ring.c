@@ -1,6 +1,7 @@
 #include "console_ring.h"
 
 #include "hardware/irq.h"
+#include "hardware/sync.h"
 #include "hardware/uart.h"
 
 void console_ring_init(console_ring_t *r) {

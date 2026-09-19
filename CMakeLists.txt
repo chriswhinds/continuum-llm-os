@@ -44,12 +44,14 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/wire/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/kvcache/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/raftnet/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/common/include)
+include_directories(${CMAKE_SOURCE_DIR}/lib/pagetable/include)
 
 enable_testing()
 
 add_subdirectory(lib/common)
 add_subdirectory(lib/wire)
 add_subdirectory(lib/kvcache)
+add_subdirectory(lib/pagetable)
 add_subdirectory(third_party/raft-lib)
 add_subdirectory(lib/raftnet)
 

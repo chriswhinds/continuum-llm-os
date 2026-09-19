@@ -1,0 +1,2 @@
+add_executable(gen_toy_weights gen_toy_weights.c)
+target_link_libraries(gen_toy_weights PRIVATE continuum_toymodel_format)

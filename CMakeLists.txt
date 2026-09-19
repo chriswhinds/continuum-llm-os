@@ -54,6 +54,7 @@ add_subdirectory(lib/wire)
 add_subdirectory(lib/kvcache)
 add_subdirectory(lib/pagetable)
 add_subdirectory(lib/pageclient)
+add_subdirectory(lib/toymodel)
 add_subdirectory(third_party/raft-lib)
 add_subdirectory(lib/raftnet)
 

@@ -58,6 +58,7 @@ add_subdirectory(lib/pageclient)
 add_subdirectory(lib/toymodel)
 add_subdirectory(third_party/raft-lib)
 add_subdirectory(lib/raftnet)
+add_subdirectory(lib/raftkv)
 
 # Added incrementally as each is implemented -- see README.md's build status table.
 # tools/ comes before services/ so an inter-service test's `if(TARGET

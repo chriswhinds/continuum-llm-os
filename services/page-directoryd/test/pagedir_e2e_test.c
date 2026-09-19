@@ -3,10 +3,20 @@
  * readable via WIRE_DIRECTORY_QUERY on every node -- including the ones
  * that never accepted the write -- proving actual Raft replication
  * through the real client TCP protocol, not just the raftkv library.
+ *
+ * Ports are derived from this process's own pid rather than hardcoded, so
+ * a stuck/orphaned process from a previous failed run (e.g. one killed by
+ * ctest's timeout before it could clean up its own children -- assert()
+ * calls abort(), which skips the kill()/waitpid() below) can never block
+ * this run by squatting on a fixed port; and any failure here goes
+ * through cleanup_and_exit() rather than a bare assert(), so THIS run
+ * doesn't leave orphans of its own for the next one to trip over.
  */
 #include <assert.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <time.h>
@@ -16,21 +26,45 @@
 #include "wire.h"
 
 #define N_NODES 3
-static const int RAFT_PORTS[N_NODES] = {17821, 17822, 17823};
-static const int CLIENT_PORTS[N_NODES] = {17831, 17832, 17833};
+static int RAFT_PORTS[N_NODES];
+static int CLIENT_PORTS[N_NODES];
+static pid_t g_pids[N_NODES];
+static char g_conf_paths[N_NODES][64];
 
 static void sleep_ms(int ms) {
     struct timespec ts = {.tv_sec = ms / 1000, .tv_nsec = (ms % 1000) * 1000000L};
     nanosleep(&ts, NULL);
 }
 
+static void cleanup_and_exit(int ok, const char *failure_msg) {
+    for (int i = 0; i < N_NODES; i++) {
+        if (g_pids[i] > 0) kill(g_pids[i], SIGTERM);
+    }
+    for (int i = 0; i < N_NODES; i++) {
+        if (g_pids[i] > 0) {
+            int status;
+            waitpid(g_pids[i], &status, 0);
+        }
+        unlink(g_conf_paths[i]);
+    }
+    if (!ok) {
+        fprintf(stderr, "pagedir_e2e_test FAILED: %s\n", failure_msg);
+        exit(1);
+    }
+    printf("all page-directoryd e2e tests passed\n");
+    exit(0);
+}
+
 int main(void) {
-    char conf_paths[N_NODES][64];
-    pid_t pids[N_NODES];
+    int port_base = 20000 + (getpid() % 20000);
+    for (int i = 0; i < N_NODES; i++) {
+        RAFT_PORTS[i] = port_base + i;
+        CLIENT_PORTS[i] = port_base + N_NODES + i;
+    }
 
     for (int i = 0; i < N_NODES; i++) {
-        snprintf(conf_paths[i], sizeof(conf_paths[i]), "/tmp/pagedir_e2e_%d.conf", i);
-        FILE *f = fopen(conf_paths[i], "w");
+        snprintf(g_conf_paths[i], sizeof(g_conf_paths[i]), "/tmp/pagedir_e2e_%d_%d.conf", (int)getpid(), i);
+        FILE *f = fopen(g_conf_paths[i], "w");
         fprintf(f, "node_id %d\n", i + 1);
         for (int j = 0; j < N_NODES; j++) {
             fprintf(f, "peer %d 127.0.0.1 %d\n", j + 1, RAFT_PORTS[j]);
@@ -40,9 +74,21 @@ int main(void) {
     }
 
     for (int i = 0; i < N_NODES; i++) {
-        pids[i] = fork();
-        if (pids[i] == 0) {
-            execl(PAGE_DIRECTORYD_BIN, "page-directoryd", "--config", conf_paths[i], (char *)NULL);
+        g_pids[i] = fork();
+        if (g_pids[i] == 0) {
+            /* Redirect away from whatever stdout/stderr this test
+             * inherited (a pipe back to ctest, when run under it) --
+             * three daemons writing concurrently into that same pipe is
+             * unnecessary contention this test doesn't need to pay for. */
+            char log_path[96];
+            snprintf(log_path, sizeof(log_path), "/tmp/pagedir_e2e_%d_%d.log", (int)getpid(), i);
+            int log_fd = open(log_path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (log_fd >= 0) {
+                dup2(log_fd, STDOUT_FILENO);
+                dup2(log_fd, STDERR_FILENO);
+                close(log_fd);
+            }
+            execl(PAGE_DIRECTORYD_BIN, "page-directoryd", "--config", g_conf_paths[i], (char *)NULL);
             _exit(127);
         }
     }
@@ -76,7 +122,7 @@ int main(void) {
         }
         if (!wrote) sleep_ms(200);
     }
-    assert(wrote);
+    if (!wrote) cleanup_and_exit(0, "no leader accepted the directory update within the retry budget");
     printf("ok: directory update accepted by the current leader\n");
 
     int all_replicated = 0;
@@ -106,16 +152,9 @@ int main(void) {
             if (!ok) all_replicated = 0;
         }
     }
-    assert(all_replicated);
+    if (!all_replicated) cleanup_and_exit(0, "the write did not replicate to all 3 nodes within the retry budget");
     printf("ok: the entry is readable via WIRE_DIRECTORY_QUERY on all 3 nodes -- real Raft replication over the real client protocol\n");
 
-    for (int i = 0; i < N_NODES; i++) kill(pids[i], SIGTERM);
-    for (int i = 0; i < N_NODES; i++) {
-        int status;
-        waitpid(pids[i], &status, 0);
-        unlink(conf_paths[i]);
-    }
-
-    printf("all page-directoryd e2e tests passed\n");
+    cleanup_and_exit(1, NULL);
     return 0;
 }

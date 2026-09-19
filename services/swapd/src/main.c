@@ -138,7 +138,12 @@ int main(int argc, char **argv) {
     struct epoll_event ev = {.events = EPOLLIN, .data.ptr = &listen_marker};
     epoll_ctl(epfd, EPOLL_CTL_ADD, listen_fd, &ev);
 
-    int tickfd = timerfd_create(CLOCK_MONOTONIC, 0);
+    /* TFD_NONBLOCK matters here, not just as a style choice: the drain
+     * loop below (`while read()==8`) relies on a second read() returning
+     * EAGAIN once fully drained. On a blocking fd, that second read()
+     * instead blocks until the *next* tick, which loops and blocks again
+     * forever -- the eviction sweep below would never actually run. */
+    int tickfd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK);
     struct itimerspec its = {.it_interval = {.tv_sec = 1, .tv_nsec = 0}, .it_value = {.tv_sec = 1, .tv_nsec = 0}};
     timerfd_settime(tickfd, 0, &its, NULL);
     ev.data.ptr = &timer_marker;

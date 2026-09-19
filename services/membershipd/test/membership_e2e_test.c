@@ -1,9 +1,16 @@
 /* Same shape as page-directoryd's e2e test, against a real 3-node
  * membershipd cluster and the WIRE_MEMBERSHIP_* client protocol.
+ *
+ * Ports are derived from this process's own pid, and every failure path
+ * goes through cleanup_and_exit() -- see pagedir_e2e_test.c's module
+ * comment for why (a stuck ctest-killed run must never block the next
+ * one, and this run must never become that stuck run itself).
  */
 #include <assert.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <time.h>
@@ -13,21 +20,45 @@
 #include "wire.h"
 
 #define N_NODES 3
-static const int RAFT_PORTS[N_NODES] = {17841, 17842, 17843};
-static const int CLIENT_PORTS[N_NODES] = {17851, 17852, 17853};
+static int RAFT_PORTS[N_NODES];
+static int CLIENT_PORTS[N_NODES];
+static pid_t g_pids[N_NODES];
+static char g_conf_paths[N_NODES][64];
 
 static void sleep_ms(int ms) {
     struct timespec ts = {.tv_sec = ms / 1000, .tv_nsec = (ms % 1000) * 1000000L};
     nanosleep(&ts, NULL);
 }
 
+static void cleanup_and_exit(int ok, const char *failure_msg) {
+    for (int i = 0; i < N_NODES; i++) {
+        if (g_pids[i] > 0) kill(g_pids[i], SIGTERM);
+    }
+    for (int i = 0; i < N_NODES; i++) {
+        if (g_pids[i] > 0) {
+            int status;
+            waitpid(g_pids[i], &status, 0);
+        }
+        unlink(g_conf_paths[i]);
+    }
+    if (!ok) {
+        fprintf(stderr, "membership_e2e_test FAILED: %s\n", failure_msg);
+        exit(1);
+    }
+    printf("all membershipd e2e tests passed\n");
+    exit(0);
+}
+
 int main(void) {
-    char conf_paths[N_NODES][64];
-    pid_t pids[N_NODES];
+    int port_base = 20000 + ((getpid() + 10007) % 20000); /* offset from pagedir_e2e_test's range */
+    for (int i = 0; i < N_NODES; i++) {
+        RAFT_PORTS[i] = port_base + i;
+        CLIENT_PORTS[i] = port_base + N_NODES + i;
+    }
 
     for (int i = 0; i < N_NODES; i++) {
-        snprintf(conf_paths[i], sizeof(conf_paths[i]), "/tmp/membership_e2e_%d.conf", i);
-        FILE *f = fopen(conf_paths[i], "w");
+        snprintf(g_conf_paths[i], sizeof(g_conf_paths[i]), "/tmp/membership_e2e_%d_%d.conf", (int)getpid(), i);
+        FILE *f = fopen(g_conf_paths[i], "w");
         fprintf(f, "node_id %d\n", i + 1);
         for (int j = 0; j < N_NODES; j++) fprintf(f, "peer %d 127.0.0.1 %d\n", j + 1, RAFT_PORTS[j]);
         fprintf(f, "client_listen_port %d\n", CLIENT_PORTS[i]);
@@ -35,9 +66,17 @@ int main(void) {
     }
 
     for (int i = 0; i < N_NODES; i++) {
-        pids[i] = fork();
-        if (pids[i] == 0) {
-            execl(MEMBERSHIPD_BIN, "membershipd", "--config", conf_paths[i], (char *)NULL);
+        g_pids[i] = fork();
+        if (g_pids[i] == 0) {
+            char log_path[96];
+            snprintf(log_path, sizeof(log_path), "/tmp/membership_e2e_%d_%d.log", (int)getpid(), i);
+            int log_fd = open(log_path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (log_fd >= 0) {
+                dup2(log_fd, STDOUT_FILENO);
+                dup2(log_fd, STDERR_FILENO);
+                close(log_fd);
+            }
+            execl(MEMBERSHIPD_BIN, "membershipd", "--config", g_conf_paths[i], (char *)NULL);
             _exit(127);
         }
     }
@@ -70,7 +109,7 @@ int main(void) {
         }
         if (!wrote) sleep_ms(200);
     }
-    assert(wrote);
+    if (!wrote) cleanup_and_exit(0, "no leader accepted the membership update within the retry budget");
     printf("ok: membership update accepted by the current leader\n");
 
     int all_replicated = 0;
@@ -100,16 +139,9 @@ int main(void) {
             if (!ok) all_replicated = 0;
         }
     }
-    assert(all_replicated);
+    if (!all_replicated) cleanup_and_exit(0, "the write did not replicate to all 3 nodes within the retry budget");
     printf("ok: membership entry replicated and readable on all 3 nodes\n");
 
-    for (int i = 0; i < N_NODES; i++) kill(pids[i], SIGTERM);
-    for (int i = 0; i < N_NODES; i++) {
-        int status;
-        waitpid(pids[i], &status, 0);
-        unlink(conf_paths[i]);
-    }
-
-    printf("all membershipd e2e tests passed\n");
+    cleanup_and_exit(1, NULL);
     return 0;
 }

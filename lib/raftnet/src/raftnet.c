@@ -10,6 +10,7 @@
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <sys/timerfd.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "clog.h"
@@ -439,7 +440,37 @@ static void *raftnet_thread_main(void *arg) {
  * Public API
  * ------------------------------------------------------------------- */
 
+/* Seeds libc's rand() once per process. raft.c's election-timeout
+ * randomization (raft_server.c's raft_randomize_election_timeout) and
+ * this file's own entry-id generation both draw from it, and glibc's
+ * rand() with no srand() call is a fixed, deterministic sequence -- not
+ * "unseeded," identical every run. That's invisible when nodes run as
+ * threads in one process (raftnet_test, raftkv_test) or as separately
+ * launched processes with a shell-visible fraction of a second between
+ * them (ordinary manual startup), but a real bug for sibling processes
+ * forked back-to-back with no intervening work: they call rand() for the
+ * first time at the same point in an identical call sequence and get the
+ * identical "random" timeout, every round, forever -- a deterministic,
+ * permanent split-vote livelock, not occasional bad luck. Exactly what a
+ * process-manager-driven cluster startup (continuumd launching every
+ * control-plane service at once, or this library's own multi-process
+ * e2e tests) looks like. getpid() guarantees a distinct seed per sibling
+ * even within the same wall-clock second that time(NULL) can't tell
+ * apart; XORing in time(NULL) still varies the sequence run to run. */
+static void seed_rand_once(void) {
+    static pthread_mutex_t seed_lock = PTHREAD_MUTEX_INITIALIZER;
+    static int seeded = 0;
+    pthread_mutex_lock(&seed_lock);
+    if (!seeded) {
+        srand((unsigned)time(NULL) ^ (unsigned)getpid());
+        seeded = 1;
+    }
+    pthread_mutex_unlock(&seed_lock);
+}
+
 raftnet_t *raftnet_start(const raftnet_config_t *cfg) {
+    seed_rand_once();
+
     raftnet_t *rn = calloc(1, sizeof(*rn));
     if (!rn) return NULL;
 

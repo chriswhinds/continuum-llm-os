@@ -111,7 +111,10 @@ static void send_health_report(server_ctx_t *ctx) {
 
     for (size_t i = 0; i < ctx->cfg.n_sinks; i++) {
         int fd = sock_tcp_connect(ctx->cfg.sinks[i].host, ctx->cfg.sinks[i].port);
-        if (fd < 0) continue;
+        if (fd < 0) {
+            clog_warn("node-agentd: cannot reach telemetry sink %s:%u", ctx->cfg.sinks[i].host, ctx->cfg.sinks[i].port);
+            continue;
+        }
         wire_send_frame_blocking(fd, WIRE_HEALTH_REPORT, WIRE_FLAG_FINAL, 0, &report, sizeof(report));
         close(fd);
     }
@@ -149,7 +152,14 @@ int main(int argc, char **argv) {
     struct epoll_event ev = {.events = EPOLLIN, .data.ptr = &listen_marker};
     epoll_ctl(epfd, EPOLL_CTL_ADD, listen_fd, &ev);
 
-    int tickfd = timerfd_create(CLOCK_MONOTONIC, 0);
+    /* TFD_NONBLOCK matters here, not just as a style choice: the drain
+     * loop below (`while read()==8`) relies on a second read() returning
+     * EAGAIN once fully drained. On a blocking fd, that second read()
+     * instead blocks until the *next* tick fires -- which then loops
+     * again and blocks on the tick after that, forever, so the health
+     * report is never actually sent. Caught by console_e2e_test finding
+     * no telemetry ever arrived. */
+    int tickfd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK);
     long ms = cfg.health_interval_ms;
     struct itimerspec its = {
         .it_interval = {.tv_sec = ms / 1000, .tv_nsec = (ms % 1000) * 1000000L},

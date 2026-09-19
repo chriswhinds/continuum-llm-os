@@ -34,6 +34,10 @@ typedef enum {
     WIRE_DIRECTORY_QUERY        = 6,  /* wire_directory_query_t */
     WIRE_DIRECTORY_RESP         = 7,  /* wire_directory_resp_t */
     WIRE_HEALTH_REPORT          = 8,  /* wire_health_report_t */
+    WIRE_DIRECTORY_UPDATE       = 12, /* wire_directory_resp_t, reused as a request: page_id+owner_node_id+tier to set */
+    WIRE_MEMBERSHIP_QUERY       = 13, /* wire_membership_query_t */
+    WIRE_MEMBERSHIP_RESP        = 14, /* wire_membership_resp_t */
+    WIRE_MEMBERSHIP_UPDATE      = 15, /* wire_membership_resp_t, reused as a request */
     WIRE_DISPATCH_PROMPT        = 9,  /* scheduler -> node-agentd/shard-execd, prompt tokens */
     WIRE_SCHED_REQUEST          = 10, /* api-gatewayd -> schedulerd, JSON request body */
     WIRE_SCHED_RESPONSE         = 11, /* schedulerd -> api-gatewayd, JSON or error */
@@ -100,6 +104,24 @@ typedef struct {
     uint64_t dram_total_bytes;
     uint64_t swap_io_bytes_per_sec;
 } wire_health_report_t;
+
+typedef enum {
+    WIRE_NODE_UNKNOWN = 0,
+    WIRE_NODE_UP      = 1,
+    WIRE_NODE_DOWN    = 2,
+} wire_node_status_t;
+
+typedef struct {
+    uint32_t node_id;
+} wire_membership_query_t;
+
+typedef struct {
+    uint32_t node_id;
+    uint8_t  status;   /* wire_node_status_t */
+    uint8_t  found;    /* 0 if unknown to membershipd -- ignored on an _UPDATE request */
+    uint16_t reserved;
+    uint64_t last_heartbeat_ns;
+} wire_membership_resp_t;
 #pragma pack(pop)
 
 /* ---- non-blocking, buffered connection ---------------------------------- */

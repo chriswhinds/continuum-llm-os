@@ -1,5 +1,6 @@
 add_library(continuum_raftkv STATIC
   src/raftkv.c
+  src/raftkv_daemon_config.c
 )
 target_include_directories(continuum_raftkv PUBLIC include)
 target_link_libraries(continuum_raftkv PUBLIC continuum_raftnet continuum_common pthread)

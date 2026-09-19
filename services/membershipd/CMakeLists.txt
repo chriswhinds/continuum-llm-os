@@ -1,0 +1,10 @@
+add_executable(membershipd src/main.c)
+target_link_libraries(membershipd PRIVATE continuum_raftkv continuum_wire continuum_common pthread)
+
+if(CONTINUUM_BUILD_TESTS)
+  add_executable(membership_e2e_test test/membership_e2e_test.c)
+  target_link_libraries(membership_e2e_test PRIVATE continuum_wire continuum_common)
+  target_compile_definitions(membership_e2e_test PRIVATE MEMBERSHIPD_BIN="$<TARGET_FILE:membershipd>")
+  add_test(NAME membership_e2e_test COMMAND membership_e2e_test)
+  set_tests_properties(membership_e2e_test PROPERTIES TIMEOUT 45)
+endif()

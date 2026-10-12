@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* swapd -- Continuum's swap manager (ARCH-002 §05): owns this node's
  * tensor address space, demand-pages it from local NVMe, and publishes
  * resident pages into the shared dram_pool/shm_pagetable that node-agentd

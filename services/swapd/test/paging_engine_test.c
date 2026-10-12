@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Exercises paging_engine against a real temp file standing in for a
  * node's NVMe-backed weight shard: ensure_resident() must fetch the right
  * bytes, publish them to the shared table/pool so a second reader can see

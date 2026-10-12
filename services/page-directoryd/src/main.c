@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* page-directoryd -- ARCH-002 §05: the cluster-wide page_id -> {owner_
  * node, tier} directory, replicated via its own Raft group (lib/raftkv).
  *

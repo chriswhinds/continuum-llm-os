@@ -1,3 +1,7 @@
+# Copyright 2026 Christopher Hinds, Stratum Labs
+# Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+# SPDX-License-Identifier: Apache-2.0
+
 # Continuum node image Buildroot defconfig (ARCH-002 §06).
 #
 # Use with a Buildroot checkout targeting the Raspberry Pi 5:

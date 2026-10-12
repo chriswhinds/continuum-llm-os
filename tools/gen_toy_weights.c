@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* gen_toy_weights -- writes a toymodel_format.h weight file with
  * deterministic pseudo-random int8 weights, so shard-execd has something
  * real (if tiny) to page in and run a forward pass against.

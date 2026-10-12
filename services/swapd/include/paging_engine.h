@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* paging_engine.h -- swapd's core: a private anonymous mmap region for this
  * node's assigned tensor shard, demand-paged from the local NVMe-backed
  * weight file (ARCH-001 §05, Fig. 3's tiered resolution), with resolved

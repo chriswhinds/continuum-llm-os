@@ -1,3 +1,7 @@
+# Copyright 2026 Christopher Hinds, Stratum Labs
+# Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+# SPDX-License-Identifier: Apache-2.0
+
 set(PICOHTTPPARSER_DIR ${CMAKE_SOURCE_DIR}/third_party/picohttpparser)
 set(JSMN_DIR ${CMAKE_SOURCE_DIR}/third_party/jsmn)
 

@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* api-gatewayd -- ARCH-002 §05 / ARCH-001 §08: the only OpenAI-protocol-
  * aware component in Continuum. Parses POST /v1/chat/completions and
  * GET /v1/models, forwards the request to schedulerd over a Unix socket

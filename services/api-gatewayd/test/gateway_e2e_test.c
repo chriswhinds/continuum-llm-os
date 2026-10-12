@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* The capstone test: the entire chain from a real HTTP request down to
  * paged tensor bytes and back. gen_toy_weights -> swapd -> shard-execd ->
  * schedulerd -> api-gatewayd, then a raw HTTP/1.1 client (no curl

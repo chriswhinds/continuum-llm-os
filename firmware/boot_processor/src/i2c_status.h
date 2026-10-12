@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* i2c_status.h -- a small read-only I2C slave register file (ARCH-002
  * §03) exposing this node's boot count, last reset reason, and uptime --
  * readable by anything on the bus even if the Pi's own network stack is

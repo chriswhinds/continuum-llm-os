@@ -1,3 +1,7 @@
+# Copyright 2026 Christopher Hinds, Stratum Labs
+# Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+# SPDX-License-Identifier: Apache-2.0
+
 # consoled originally targeted civetweb (ARCH-002 §02) for its HTTP
 # surface, but the vendored third_party/civetweb snapshot (an unpinned
 # clone of upstream HEAD) turned out to have a genuine syntax error deep

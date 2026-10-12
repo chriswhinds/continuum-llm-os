@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Full pipeline end-to-end test against REAL binaries: gen_toy_weights ->
  * swapd -> shard-execd, then a client dispatches a prompt over TCP (the
  * same link schedulerd uses -- see shard_config.h on why this is TCP,

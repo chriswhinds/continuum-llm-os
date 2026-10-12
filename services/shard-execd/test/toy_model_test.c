@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Generates a real toy weight file (via the actual gen_toy_weights
  * binary), starts a real swapd against it, and loads+runs the model
  * through the real pageclient path -- proving tensor loading actually

@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* raftkv_daemon_config.h -- the config file shape page-directoryd and
  * membershipd both use (ARCH-002 §05's two control-plane Raft groups):
  *

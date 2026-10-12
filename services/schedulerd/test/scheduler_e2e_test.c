@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Full chain against real binaries: gen_toy_weights -> swapd -> shard-execd
  * -> schedulerd, then a client sends a WIRE_SCHED_REQUEST naming the model
  * and gets back the same relayed token stream shard_execd_e2e_test

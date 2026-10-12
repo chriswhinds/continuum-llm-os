@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Real pipeline: gen_toy_weights -> swapd -> node-agentd (health reports
  * every 300ms) -> consoled, then a raw HTTP client polls GET /api/nodes
  * until the node's real telemetry shows up, and checks GET / serves the

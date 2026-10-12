@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* console_page.h -- the operator console's entire frontend (ARCH-001
  * §10), embedded as a string constant and compiled into consoled
  * rather than read from disk at runtime, so the binary has no asset

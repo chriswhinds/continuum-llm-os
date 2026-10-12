@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* shm_pagetable.h -- the local DRAM pool's page table as a POSIX shared-
  * memory segment, mapped by node-agentd (owner/writer of record), swapd
  * (the userfaultfd handler resolving a fault to a tier and an offset

@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* json_util.h -- small helpers built on the vendored jsmn tokenizer
  * (third_party/jsmn) for pulling the handful of fields api-gatewayd
  * cares about out of an OpenAI-shaped chat completion request body.

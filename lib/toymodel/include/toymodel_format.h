@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* toymodel_format.h -- the weight file layout shared by tools/gen_toy_
  * weights (which writes one) and shard-execd (which reads one).
  *

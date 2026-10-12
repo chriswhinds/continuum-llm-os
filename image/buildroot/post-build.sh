@@ -1,4 +1,7 @@
 #!/bin/sh
+# Copyright 2026 Christopher Hinds, Stratum Labs
+# Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+# SPDX-License-Identifier: Apache-2.0
 # post-build.sh -- copies this repo's own cross-built binaries into the
 # Buildroot target rootfs (ARCH-002 §06). Buildroot calls this with
 # $1 = the target rootfs directory once its own build finishes; it does

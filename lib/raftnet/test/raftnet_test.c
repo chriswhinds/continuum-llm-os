@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Integration test: brings up a real 3-node raftnet cluster on loopback,
  * waits for a leader to be elected, proposes an entry on the leader, and
  * checks it gets applied on all three nodes. This is the thing that proves

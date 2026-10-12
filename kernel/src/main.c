@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* continuumd -- the Continuum Kernel. PID 1 on every node (ARCH-002 §04):
  * brings up networking, opens the boot-processor UART heartbeat link, and
  * supervises this node's service set as separate, fault-isolated child

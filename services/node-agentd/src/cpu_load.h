@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* cpu_load.h -- a tiny /proc/stat-based CPU utilization sampler. Two
  * consecutive reads are needed to compute a percentage (the counters in
  * /proc/stat are cumulative since boot); call cpu_load_sample() once per

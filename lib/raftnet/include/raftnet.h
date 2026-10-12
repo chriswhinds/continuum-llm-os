@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* raftnet.h -- glues the vendored willemt/raft consensus core to Continuum's
  * TCP wire protocol, for page-directoryd and membershipd (ARCH-002 §05).
  *

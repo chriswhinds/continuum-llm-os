@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* consoled -- ARCH-002 §05 / ARCH-001 §10: the operator's one screen --
  * cluster-wide node health, aggregated from node-agentd's WIRE_HEALTH_
  * REPORT telemetry (ARCH-002 §05's node-agentd sends these to configured

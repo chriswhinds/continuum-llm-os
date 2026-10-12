@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* console_ring.h -- a 4KB circular buffer capturing every byte the Pi
  * writes to its console UART (ARCH-002 §03), for post-mortem reads after
  * a crash: the boot processor keeps the Pi's last output even after a

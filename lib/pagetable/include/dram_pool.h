@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* dram_pool.h -- the node's actual tensor bytes: a POSIX shared-memory
  * segment of `capacity * page_size` bytes, where `capacity` matches the
  * companion shm_pagetable's capacity (see shm_pagetable.h's header note --

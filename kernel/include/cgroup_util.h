@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* cgroup_util.h -- best-effort cgroup v2 placement for supervised children.
  *
  * This is deliberately best-effort: it requires cgroup v2 to be mounted

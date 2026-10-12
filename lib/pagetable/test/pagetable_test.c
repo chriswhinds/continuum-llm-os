@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Proves the page table is genuinely shared across processes (the whole
  * point of shm_pagetable), not just within one process's address space:
  * the parent (playing node-agentd) writes entries, a forked child (playing

@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* minheap.h -- binary min-heap keyed by a signed priority (lower = served
  * first). Used by schedulerd for request placement scoring (ARCH-002 §05). */
 #ifndef CONTINUUM_MINHEAP_H

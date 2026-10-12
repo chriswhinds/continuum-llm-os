@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Continuum boot processor firmware (ARCH-002 §03) -- runs on the RP2040
  * (Raspberry Pi Pico) wired to one Raspberry Pi 5 node. Bare metal, no
  * RTOS: a single superloop plus a UART RX interrupt, matching ARCH-002's

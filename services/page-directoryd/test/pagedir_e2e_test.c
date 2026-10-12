@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Real 3-node page-directoryd cluster: writes a directory entry (retrying
  * across nodes until one accepts as leader), then confirms it becomes
  * readable via WIRE_DIRECTORY_QUERY on every node -- including the ones

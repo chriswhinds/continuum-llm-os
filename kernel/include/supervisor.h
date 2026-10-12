@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* supervisor.h -- continuumd's process supervision: fork/exec each
  * configured service as its own child (fault isolation -- a crash in one
  * service must not take another down, ARCH-002 §04), reap exits via the

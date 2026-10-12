@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* clog.h -- minimal leveled logging to stderr, shared by every Continuum daemon. */
 #ifndef CONTINUUM_CLOG_H
 #define CONTINUUM_CLOG_H

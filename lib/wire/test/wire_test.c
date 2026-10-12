@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Round-trip tests for lib/wire: the blocking helpers and the non-blocking
  * buffered wire_conn_t, run over a socketpair() so no network is needed. */
 #include "wire.h"

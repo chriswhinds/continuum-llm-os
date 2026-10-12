@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* Runs a REAL swapd subprocess against a real weight file, then confirms
  * pageclient_get_page() -- what shard-execd actually calls -- returns
  * correct bytes both on a cold miss (swapd has to page it in) and a

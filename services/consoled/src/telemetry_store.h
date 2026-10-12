@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* telemetry_store.h -- the in-memory table consoled aggregates node
  * health telemetry into. Written by the telemetry TCP listener thread
  * (one WIRE_HEALTH_REPORT per node-agentd health tick, ARCH-002 §05),

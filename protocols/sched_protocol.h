@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* sched_protocol.h -- the payload carried inside WIRE_SCHED_REQUEST, from
  * api-gatewayd to schedulerd (ARCH-001 Fig. 4's "route(model, priority,
  * est. tokens)" step). schedulerd strips `model_name` (used only for

@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* pageclient.h -- the "read a tensor page" side of the local shared-memory
  * fast path: attach to swapd's shared table/pool (read-only, like
  * node-agentd) for zero-copy reads of already-resident pages, and fall

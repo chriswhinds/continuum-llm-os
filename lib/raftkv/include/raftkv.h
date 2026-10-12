@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* raftkv.h -- a small replicated key-value store built on lib/raftnet.
  * page-directoryd and membershipd are both, structurally, "a Raft group
  * whose FSM is a key-value table" (ARCH-002 §05) -- the page directory

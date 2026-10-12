@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* node-agentd -- ARCH-002 §05: owns this node's DRAM-pool bookkeeping (via
  * the shared page table/pool swapd created), answers remote PAGE_FETCH_REQ
  * for pages resident in this node's DRAM, and pushes health telemetry.

@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* kvcache.h -- token-prefix KV cache, linked directly into shard-execd
  * (ARCH-002 §02, §05) rather than run as its own daemon, to keep the
  * hottest path in the decode loop free of an extra IPC hop.

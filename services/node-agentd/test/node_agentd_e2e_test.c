@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* End-to-end test against the REAL node-agentd binary (not just its
  * source functions): plays swapd's role by creating the shared page
  * table/pool directly, publishes one page, launches node-agentd pointed

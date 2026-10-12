@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* sock_util.h -- small POSIX socket helpers shared by lib/wire and every
  * daemon that speaks TCP (node-to-node) or Unix domain sockets (local IPC,
  * e.g. api-gatewayd -> schedulerd, per ARCH-002 §05). */

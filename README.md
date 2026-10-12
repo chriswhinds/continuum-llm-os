@@ -1,3 +1,8 @@
+<!--
+  Copyright 2026 Christopher Hinds, Stratum Labs
+  Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+  SPDX-License-Identifier: Apache-2.0
+-->
 # Continuum OS — Reference Implementation
 
 A real, buildable, tested implementation of the architecture described in
@@ -250,3 +255,11 @@ continuum-os/
 ├── image/            Buildroot defconfig, kernel config fragment, config templates
 └── CMakeLists.txt    top-level super-build
 ```
+
+## License
+
+Copyright 2026 Christopher Hinds, Stratum Labs.
+
+Continuum OS is licensed under the [Apache License, Version 2.0](LICENSE).
+See [NOTICE](NOTICE) for attribution, including the third-party components
+vendored under `third_party/`, which keep their own licenses.

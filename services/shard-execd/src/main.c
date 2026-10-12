@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* shard-execd -- ARCH-002 §05: loads its model's tensors through swapd
  * (via pageclient, see toy_model.c) and runs the forward/decode loop for
  * one request at a time, streaming generated tokens back to whoever

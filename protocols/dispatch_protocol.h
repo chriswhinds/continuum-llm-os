@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* dispatch_protocol.h -- the payload shape carried inside WIRE_DISPATCH_
  * PROMPT / WIRE_TOKEN_CHUNK frames between schedulerd and shard-execd
  * (ARCH-001 Fig. 4's "dispatch prompt tokens" / "token chunk" steps).

@@ -1,3 +1,7 @@
+# Copyright 2026 Christopher Hinds, Stratum Labs
+# Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+# SPDX-License-Identifier: Apache-2.0
+
 # Boot processor firmware (ARCH-002 §03) -- a separate CMake project from
 # the rest of Continuum: it cross-compiles for the RP2040 with
 # arm-none-eabi-gcc via the Pico SDK's own toolchain file, not this repo's

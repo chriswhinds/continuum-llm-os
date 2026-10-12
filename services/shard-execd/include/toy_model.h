@@ -1,3 +1,8 @@
+/* Copyright 2026 Christopher Hinds, Stratum Labs
+ * Licensed under the Apache License, Version 2.0 -- see the LICENSE file at the repository root.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /* toy_model.h -- loads a toymodel_format.h weight file's tensors through a
  * pageclient (so loading genuinely exercises swapd's demand paging, one
  * page at a time, per tensor) and runs the forward pass: embed -> single
